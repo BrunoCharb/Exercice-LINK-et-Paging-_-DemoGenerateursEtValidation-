@@ -7,17 +7,18 @@ namespace DemoGenerateursEtValidation.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private IAutoRep _collectionAutos;
+        //private IAutoRep _collectionAutos;
+        private readonly IAutoRep _autoRepository;
 
-        public HomeController(ILogger<HomeController> logger, IAutoRep collectionAutos)
+        public HomeController(ILogger<HomeController> logger, IAutoRep autoRepository)
         {
             _logger = logger;
-            _collectionAutos = collectionAutos; // Initialiser la liste d'auto
+            _autoRepository = autoRepository; // Initialiser la liste d'auto
         }
 
         public IActionResult Index()
         {
-            return View("Liste", _collectionAutos.MesAuto); //Afficher la liste d'auto
+            return View("Liste", _autoRepository.MesAuto); //Afficher la liste d'auto
         }
 
         public IActionResult Create()
@@ -29,8 +30,8 @@ namespace DemoGenerateursEtValidation.Controllers
         {
             if (ModelState.IsValid) // Si le modèle est valide, on affiche l'auto
             {
-                _collectionAutos.AddAuto(auto);
-                return View("Liste", _collectionAutos.MesAuto);
+                _autoRepository.AddAuto(new Auto {Marque = auto.Marque, Model = auto.Model, Prix = auto.Prix });
+                return View("Liste", _autoRepository.MesAuto);
                 //return View("Auto", auto);
             }
             return View("Ajouter", auto); // Sinon on réaffiche le formulaire
@@ -39,14 +40,14 @@ namespace DemoGenerateursEtValidation.Controllers
 
         public IActionResult Details(int id)
         {
-            Auto auto = _collectionAutos.GetAuto(id);
+            Auto auto = _autoRepository.GetAuto(id);
             return View("Auto", auto);
         }
 
         public IActionResult Delete(int id)
         {
-            _collectionAutos.SupprimerAuto(id);
-            return View("Liste", _collectionAutos.MesAuto);
+            _autoRepository.SupprimerAuto(id);
+            return View("Liste", _autoRepository.MesAuto);
         }
 
         public IActionResult Edit(Auto auto)
@@ -56,8 +57,8 @@ namespace DemoGenerateursEtValidation.Controllers
 
         public IActionResult Modifier(Auto auto)
         {
-            _collectionAutos.ModifierAuto(auto);
-            return View("Liste", _collectionAutos.MesAuto);
+            _autoRepository.ModifierAuto(auto);
+            return View("Liste", _autoRepository.MesAuto);
         }
 
         public IActionResult Privacy()

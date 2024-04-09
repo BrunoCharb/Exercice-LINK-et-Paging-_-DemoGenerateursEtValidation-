@@ -1,11 +1,17 @@
+using DemoGenerateursEtValidation;
 using DemoGenerateursEtValidation.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSingleton<IAutoRep, MemAutoRep>();
+builder.Services.AddDbContext<AutoDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration["ConnectionStrings:AutoDbContextConnection"]);
+});
+builder.Services.AddScoped<IAutoRep, DbAutoRep>();
 
 var app = builder.Build();
 
@@ -27,5 +33,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+InitialisateurBD.Seed(app);
 
 app.Run();

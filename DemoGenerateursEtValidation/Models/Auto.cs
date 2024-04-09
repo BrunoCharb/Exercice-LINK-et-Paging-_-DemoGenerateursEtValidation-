@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DemoGenerateursEtValidation.Models
 {
     public class Auto
     {
         [Required]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int? Id { get; set; }
 
         [Required]
