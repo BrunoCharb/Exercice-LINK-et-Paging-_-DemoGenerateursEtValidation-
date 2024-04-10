@@ -10,11 +10,13 @@ namespace DemoGenerateursEtValidation.Models
         {
             _context = autoDbContext;
         }
+
+        
         public IEnumerable<Auto> MesAuto
         {
             get
             {
-                return _context.Autos.OrderBy(a => a.Id).ToList();
+                return _context.Autos.OrderBy(a => a.Id);
             }
         }
 

@@ -2,7 +2,7 @@
 {
     public interface IAutoRep
     {
-        //Collection d'autos
+        //Collection d'autos        
         IEnumerable<Auto> MesAuto { get; }
 
         //Méthodes CURD

@@ -1,5 +1,6 @@
 ﻿using DemoGenerateursEtValidation.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace DemoGenerateursEtValidation.Controllers
@@ -16,9 +17,29 @@ namespace DemoGenerateursEtValidation.Controllers
             _autoRepository = autoRepository; // Initialiser la liste d'auto
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string recherche, int? pageNumber)
         {
-            return View("Liste", _autoRepository.MesAuto); //Afficher la liste d'auto
+
+            if (!string.IsNullOrEmpty(recherche))
+            {
+                ViewBag.Recherche = recherche;
+                IQueryable<Auto> resultats =
+                _autoRepository.MesAuto.AsQueryable().Where(a => a.Marque.Contains(recherche) || a.Model.Contains(recherche));
+                int pageSize = 10; // Nombre d'ingrédients par page
+                return View(await PaginatedList<Auto>.CreateAsync(resultats.AsNoTracking(),
+                pageNumber ?? 1, pageSize)); // Créer une page avec les résultats
+            }
+
+            else
+            {                
+                int pageSize = 10;
+                return View(await PaginatedList<Auto>.CreateAsync(_autoRepository.MesAuto.AsQueryable().AsNoTracking() , pageNumber ?? 1, pageSize));
+
+            }
+            //IQueryable<Auto> autos = _autoRepository.MesAuto;
+            //int pageSize = 10;
+            //return View(await PaginatedList<Auto>.CreateAsync(autos.AsNoTracking() , pageNumber ?? 1, pageSize));
+            //return View("Liste", _autoRepository.MesAuto); //Afficher la liste d'auto
         }
 
         public IActionResult Create()
